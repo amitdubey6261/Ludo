@@ -7,6 +7,8 @@ import Resources from './Utils/Resourses';
 import AssetsArray from './Utils/Assets';
 import Helper from './Helper';
 import Controllers from './Controller';
+import World from './world/World';
+import Environment from './world/Environment';
 
 export default class Experience{ 
     static instance: Experience; 
@@ -19,6 +21,8 @@ export default class Experience{
     resources : Resources ;
     helpers : Helper  ; 
     controllers : Controllers ; 
+    world : World ;
+    environement : Environment ;  
     
     constructor(canvas?: HTMLCanvasElement ){
         if( Experience.instance ){
@@ -44,6 +48,11 @@ export default class Experience{
 
             this.time.on('update' , ()=>{
                 this.update() ; 
+            })
+
+            this.resources.on('ready' , ()=>{
+                this.world = new World() ; 
+                this.environement = new Environment() ;
             })
         }
     }
