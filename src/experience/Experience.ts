@@ -64,6 +64,7 @@ export default class Experience{
 
     update(){
         this.renderer.update();
-        if( this.controllers ) this.controllers.update() ; 
+        if( this.controllers ) this.controllers.update() ;
+        if( this.world ) this.world.upadte() ;  
     }
 }

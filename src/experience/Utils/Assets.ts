@@ -17,6 +17,12 @@ const AssetsArray : AssetT[] = [
         path : "/models/Michelle.glb",
 
     }
+    ,
+    {
+        name : "dice" , 
+        type : "glbmodel", 
+        path : "/models/dice.glb" , 
+    }
 ]
 
 export default AssetsArray ; 
