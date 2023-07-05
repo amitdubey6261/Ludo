@@ -52,6 +52,7 @@ export default class Experience{
 
             this.resources.on('ready' , ()=>{
                 this.world = new World() ; 
+                console.log('ji')
                 this.environement = new Environment() ;
             })
         }

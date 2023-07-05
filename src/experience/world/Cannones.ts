@@ -1,8 +1,9 @@
 import * as CANNON from 'cannon-es' ; 
 import Experience from '../Experience';
 import CannonDebugger from 'cannon-es-debugger';
+import { EventEmitter } from 'events';
 
-class Cannones {
+class Cannones extends EventEmitter {
     experience : Experience ; 
     scene : THREE.Scene ; 
     camera : THREE.PerspectiveCamera ;
@@ -11,9 +12,11 @@ class Cannones {
     timeStep : number ;
     diceBody : CANNON.Body ;
     groundBody : CANNON.Body ; 
+    diceResult : number ; 
 
 
     constructor(){
+        super();
         this.experience = new Experience() ; 
         this.scene = this.experience.scene ; 
         this.camera = this.experience.camera.perspectiveCamera ; 
@@ -22,7 +25,8 @@ class Cannones {
         this.initWorld() ; 
         this.initCannonDebg() ;
         this.createcannonBody();
-        this.diceCalc() ; 
+        this.diceCalc() ;
+        this.throwDice(); 
     }
 
     initWorld(){
@@ -41,9 +45,9 @@ class Cannones {
 
     createcannonBody(){
         this.diceBody = new CANNON.Body({
-            shape : new CANNON.Box(new CANNON.Vec3( 1 , 1 , 1 )) , 
+            shape : new CANNON.Box(new CANNON.Vec3( 0.5 , 0.5 , 0.5 )) , 
             position : new CANNON.Vec3( -50 , 0 , -50 ) , 
-            mass : 0.001 ,  
+            mass : 0.002 ,  
         })
         this.groundBody = new CANNON.Body({
             shape : new CANNON.Plane() , 
@@ -80,43 +84,38 @@ class Cannones {
 
             if (isZero(euler.z)) {
                 if (isZero(euler.x)) {
-                    showRollResults(1);
+                    this.emit("DR" , 1);
                 } else if (isHalfPi(euler.x)) {
-                    showRollResults(4);
+                    this.emit("DR" , 4);
                 } else if (isMinusHalfPi(euler.x)) {
-                    showRollResults(3);
+                    this.emit("DR" , 3);
                 } else if (isPiOrMinusPi(euler.x)) {
-                    showRollResults(6);
+                    this.emit("DR" , 6);
                 } else {
                     // landed on edge => wait to fall on side and fire the event again
                     this.diceBody.allowSleep = true;
                 }
             } else if (isHalfPi(euler.z)) {
-                showRollResults(2);
+                this.emit("DR" , 2);
             } else if (isMinusHalfPi(euler.z)) {
-                showRollResults(5);
+                this.emit("DR" , 5);
             } else {
                 // landed on edge => wait to fall on side and fire the event again
                 this.diceBody.allowSleep = true;
             }
-
-            function showRollResults(x:number){
-                console.log(x) ;
-            }
         })
+    }
 
-        const applyRandomness = () =>{
-            this.diceBody.applyImpulse( new CANNON.Vec3( 0 , 0+Math.random()*0.03 , 0 ));
-            this.diceBody.applyImpulse( new CANNON.Vec3(  0+Math.random()*0.02 , 0 , 0+Math.random()*0.01 ));
-            this.diceBody.applyImpulse( new CANNON.Vec3( 0+Math.random()*0.02, 0 , 0+Math.random()*0.02 ));
-            this.diceBody.applyTorque( new CANNON.Vec3( 0 , 0.2 , 0 ));
-        }
+    applyRandomness = () =>{
+        this.diceBody.applyImpulse( new CANNON.Vec3( 0 , 0+Math.random()*0.03 , 0 ));
+        this.diceBody.applyImpulse( new CANNON.Vec3(  0+Math.random()*0.02 , 0 , 0+Math.random()*0.01 ));
+        this.diceBody.applyImpulse( new CANNON.Vec3( 0+Math.random()*0.02, 0 , 0+Math.random()*0.02 ));
+        this.diceBody.applyTorque( new CANNON.Vec3( 0 , 0.2 , 0 ));
+    }
 
-
-        window.addEventListener('click' , ()=>{
-            applyRandomness(); 
-            this.diceBody.position.set( -50 , 0 , -50) ; 
-        })
+    throwDice(){
+        this.applyRandomness();
+        this.diceBody.position.set( -50 , 0 , -50) ; 
     }
     
     update(){

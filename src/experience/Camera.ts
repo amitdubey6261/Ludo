@@ -20,7 +20,8 @@ export default class Camera{
 
     createPerspectiveCamera(){
         this.perspectiveCamera = new THREE.PerspectiveCamera( 35 , this.sizes.aspect , 0.1 , 1000) ;
-        this.perspectiveCamera.position.set( 0 , 2 , 5 ) ; 
+        this.perspectiveCamera.position.set( 0 , 10 , 10 ) ;
+        // this.perspectiveCamera.lookAt(new THREE.Vector3( 0 , 0 , 0));
         this.scene.add( this.perspectiveCamera ); 
     }
 

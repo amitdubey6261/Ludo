@@ -23,6 +23,18 @@ const AssetsArray : AssetT[] = [
         type : "glbmodel", 
         path : "/models/dice.glb" , 
     }
+    ,
+    {
+        name : "board" , 
+        type : "glbmodel",
+        path : "/models/newBoard.glb" , 
+    }
+    ,
+    {
+        name : "token",
+        type : "glbmodel" ,
+        path : "/models/token.glb" , 
+    }
 ]
 
 export default AssetsArray ; 
