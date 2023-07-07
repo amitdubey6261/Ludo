@@ -52,15 +52,14 @@ export default class Experience{
 
             this.resources.on('ready' , ()=>{
                 this.world = new World() ; 
-                console.log('ji')
                 this.environement = new Environment() ;
             })
         }
     }
 
     resize(){
-        this.camera.resize ; 
-        this.renderer.resize;
+        this.camera.resize() ; 
+        this.renderer.resize();
     }
 
     update(){
