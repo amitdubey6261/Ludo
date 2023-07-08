@@ -1,4 +1,5 @@
 import Experience from "../../Experience";
+import { defaultPosition } from "../../Static";
 import Resources from "../../Utils/Resourses";
 
 class Tokens{
@@ -19,9 +20,9 @@ class Tokens{
 
     initToken() {
         const tokens:number[][] = new Array();
-        const defaultPosition = [ [3,3] , [3,12] , [11,3] , [11,12] ] ; 
+        const defaultTokenPosition = defaultPosition() ; 
         for (let i = 0; i < 4; i++) {
-            const tokenArray:number[] = new Array(4).fill({ position: { x: defaultPosition[i][0], y: defaultPosition[i][1], z: 1 } });
+            const tokenArray:number[] = new Array(4).fill({ position: { x: defaultTokenPosition[i][0], y: defaultTokenPosition[i][1], z: 1 } });
             tokens.push(tokenArray);
         }
 

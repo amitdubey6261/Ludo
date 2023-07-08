@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Experience from "../../Experience";
 import { EventEmitter } from 'events';
+import { defaultPosition } from '../../Static';
 
 class TokenSelect extends EventEmitter {
     experience: Experience;
@@ -38,14 +39,13 @@ class TokenSelect extends EventEmitter {
         })
     }
 
-    async getToken(open: boolean) {
+    async getToken(open: boolean , userTurn : number) {
         return new Promise<THREE.Mesh>((resolve , reject)=>{
 
-            const defaultTokenPosition = [[3, 3], [3, 12], [11, 3], [11, 12]];
+            const defaultTokenPosition = defaultPosition();
 
             const tokenAccordingToname = (token: any): boolean => {
-                // if (token.name.charAt(0) != `${this.userTurn}`) {
-                if (token.name.charAt(0) != `${0}`) {
+                if (token.name.charAt(0) != `${userTurn}`) {
                     return false;
                 }
                 return true;
@@ -53,8 +53,7 @@ class TokenSelect extends EventEmitter {
     
             const selectInsideOpenCase = (token: any, open: boolean): boolean => {
                 if (!open) {
-                    // if (token.position.x == defaultTokenPosition[this.userTurn][0] && token.position.z == defaultTokenPosition[this.userTurn][1]) {
-                    if (token.position.x == defaultTokenPosition[0][0] && token.position.z == defaultTokenPosition[0][1]) {
+                    if (token.position.x == defaultTokenPosition[userTurn][0] && token.position.z == defaultTokenPosition[userTurn][1]) {
                         return false;
                     }
                 }
@@ -64,6 +63,7 @@ class TokenSelect extends EventEmitter {
             const validateToken = (token: any, open: boolean): boolean => {
     
                 if (!tokenAccordingToname(token)) {
+                    console.log(token.name);
                     alert('selected wrong token slect your token ');
                     return false;
                 }

@@ -1,6 +1,7 @@
 interface stepType{
     x:number , 
     y: number , 
+    z: number , 
 }
 
 import * as THREE from 'three' ; 
@@ -57,7 +58,7 @@ class IdentifyPath {
             }
 
             console.log('rasta :', i, j);
-            this.pathArray.push({x : i , y : j});
+            this.pathArray.push({x : i , y : 0 , z : j});
 
             if (i == 6) {
                 traverse(step - 1, i, j + 1);
@@ -105,30 +106,28 @@ class IdentifyPath {
             return pathIdxs;
         }
 
-        findPath( steps , i , j );
+        findPath( steps+1 , i , j );
 
     }
 
     getPath(steps:number , i:number , j:number):stepType[]{
         if( i == 3 && j == 3 ){
             // console.log( i , j  ,"___" , 6 , 1 );
-            return [{ x : 6 , y : 1 }] ; 
+            return [{ x : 6 , y : 0  , z:1 }] ; 
         }
         else if( i == 3 && j == 12 ){
             // console.log( i , j  ,"___" , 1 , 8 );
-            return [{ x : 1 , y : 8 }] ;
+            return [{ x : 1 , y : 0  , z : 8 }] ;
         }
         else if( i == 11 && j == 3 ){
             // console.log( i , j  ,"___" , 13 , 6 );
-            return [{ x : 13 , y : 6 }] ;
+            return [{ x : 13 , y : 0  , z : 6 }] ;
         }
         else if( i == 11 && j == 12 ){
             // console.log( i , j  ,"___" , 8 , 13 );
-            return [{ x : 8 , y : 13 }] ;
+            return [{ x : 8 , y : 0  , z : 13 }] ;
         }
         else{
-            // console.log('not default' , i  , j );
-            // return [{ x : 6 , y : 1 }] ;
             this.pathArray = [] ; 
             this.findPath(steps , i ,  j );
             return this.pathArray ; 

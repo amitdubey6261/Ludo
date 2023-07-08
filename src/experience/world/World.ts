@@ -6,23 +6,20 @@ import IdentifyPath from "./Calculations/IdentifyPath";
 import Cannones from "./Cannones";
 import * as THREE from 'three';
 import Animate from "./Calculations/Animate";
+import { defaultPosition } from "../Static";
 
 class World {
-
     experience: Experience;
     scene: THREE.Scene;
     resources: Resources;
     cannon: Cannones;
     diceMesh: THREE.Group;
-    boardMesh: THREE.Group;
     tokens: Tokens;
     allTokens: THREE.Mesh[];
     tokenSelect: TokenSelect;
     identifyPath: IdentifyPath;
-    userTurn: number;
-    mesh : THREE.Mesh ; 
-    co : any ; 
     animate : Animate ; 
+    userTurn : number ; 
 
     constructor() {
         this.experience = new Experience();
@@ -54,23 +51,35 @@ class World {
         window.addEventListener('dblclick', this.engine.bind(this));
     }
 
-    //gameengine
-    async engine() {
-        // const value = await this.throwDice();
-        const value = 6  ; 
 
-        if (value != 6) {
+    async engine() {
+        let Dicevalue:number = Number(prompt('Enter number')) ; 
+        // const Dicevalue = await this.throwDice();
+        console.log('dice : ' , Dicevalue );
+
+        if (Dicevalue != 6) {
             if (this.checkAllTokenInside()) {
                 alert('your all token inside have 6 to open');
+                this.userTurn += 1 ; 
+                this.userTurn %= 4 ; 
                 return;
             }
         }
 
         const slectToken = async() =>{
             try{
-                const token:THREE.Mesh = await this.tokenSelect.getToken(value == 6 ? true : false ) as THREE.Mesh ;
-                const path = this.identifyPath.getPath(value , token.position.x , token.position.z ) ;
+                const token:THREE.Mesh = await this.tokenSelect.getToken(Dicevalue == 6 ? true : false , this.userTurn ) as THREE.Mesh ;
+                const path = this.identifyPath.getPath(Dicevalue , token.position.x , token.position.z ) ;
+                let ate : boolean|unknown ; 
+                try{ate = await this.animate.animateTokenAndCheckAte(token , path);}catch(e){ate = e ;}
 
+                if(Dicevalue == 6 || ate == true ){
+                    console.log('chance again');
+                    return  ; 
+                }
+
+                this.userTurn += 1 ; 
+                this.userTurn %= 4 ; 
             }
             catch{
                 slectToken();
@@ -87,7 +96,7 @@ class World {
     }
 
     checkAllTokenInside() {
-        const defaultTokenPosition = [[3, 3], [3, 12], [11, 3], [11, 12]];
+        const defaultTokenPosition = defaultPosition();
         for (let i = 0; i < 4; i++) {
             const token = this.scene.getObjectByName(`${this.userTurn}${i}`);
             const posX = token?.position.x;
@@ -105,7 +114,8 @@ class World {
             this.diceMesh.position.copy(new THREE.Vector3(this.cannon.diceBody.position.x, this.cannon.diceBody.position.y, this.cannon.diceBody.position.z));
             this.diceMesh.quaternion.copy(new THREE.Quaternion(this.cannon.diceBody.quaternion.x, this.cannon.diceBody.quaternion.y, this.cannon.diceBody.quaternion.z, this.cannon.diceBody.quaternion.w));
         };
-        if( this.identifyPath )this.identifyPath.update();
+        // if( this.identifyPath )this.identifyPath.update();
+        if(this.animate) this.animate.update() ; 
     }
 
 }
