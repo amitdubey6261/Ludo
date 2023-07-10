@@ -3,10 +3,14 @@ import Resources from "../Utils/Resourses";
 import TokenSelect from "./Calculations/TokenSelect";
 import Tokens from "./Calculations/Tokens";
 import IdentifyPath from "./Calculations/IdentifyPath";
+
 import Cannones from "./Cannones";
 import * as THREE from 'three';
+import uniqid from 'uniqid' ; 
+
 import Animate from "./Calculations/Animate";
 import { defaultPosition } from "../Static";
+import { Socket } from "socket.io-client";
 
 class World {
     experience: Experience;
@@ -20,12 +24,30 @@ class World {
     identifyPath: IdentifyPath;
     animate : Animate ; 
     userTurn : number ; 
+    multiplayer : boolean ;
+    socket : Socket ;
+    room : string ; 
 
     constructor() {
+        this.multiplayer = true ; 
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
+        this.socket = this.experience.socket ; 
 
+        this.activateGameType() ; 
+    }
+
+    activateGameType(){
+        if(!this.multiplayer){
+            this.initSimpleGame() ; 
+        }
+        else{
+            this.initMultiplayer();
+        }
+    }
+
+    initSimpleGame(){
         this.initGameAssets();
         this.addVisuals();
         this.setEventListners();
@@ -106,6 +128,58 @@ class World {
             }
         }
         return true;
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    initMultiplayer(){
+        const value:number = Number(prompt('Enter Number of Players')) ; 
+
+        if( value ? value > 4 : false ){
+            alert('Enter in range 1 - 4 ') ; 
+            this.initMultiplayer() ; 
+        }
+
+        const value2:number = Number(prompt('Enter Room or join room  0/1')) ; 
+
+        if( value2 == 0 ){
+            this.createRoom() ; 
+        }
+        else if( value2 ==1 ){
+            this.joinRoom() ; 
+        }
+        else{
+            alert('wrong I/P') ; 
+            this.initMultiplayer();
+        }
+
+        this.socket.on('Error' , (e)=>{
+            console.log(e);
+        })
+        
+    }
+
+    createRoom(){
+        const roomid = uniqid() ; 
+
+        this.socket.emit('create_room' , roomid ) ; 
+
+        this.socket.on('created_room', (roomid)=>{
+            this.room = roomid ; 
+            console.log(`inited ${this.room}`);
+            this.InRoom();
+        })
+    }
+
+    joinRoom(){
+        const roomid = prompt('Enter Room wanted to join') ; 
+
+        this.socket.emit('join_room' , roomid ); 
+        this.InRoom();
+    }
+
+    InRoom(){
+        console.log('room mai huu')
     }
 
     upadte() {
