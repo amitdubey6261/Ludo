@@ -3,6 +3,7 @@ import gsap from "gsap";
 
 import Experience from "../../Experience";
 import { defaultPosition, safePositions } from '../../Static';
+import { Socket } from 'socket.io-client';
 
 interface stepType{
     x : number ; 
@@ -10,17 +11,29 @@ interface stepType{
     z : number ; 
 }
 
+interface dataType{
+    roomID : string|undefined ; 
+    position : THREE.Vector3 ; 
+    name : string ; 
+}
+
 export default class Animate{
     experience : Experience ; 
     scene : THREE.Scene ; 
     ate : boolean ; 
+    socket : Socket ; 
+    roomId : string | undefined  ; 
     safeTokenPostions : number[][] ; 
     defaultTokenPostions : number[][] ; 
     
-    constructor(){
+    constructor(roomID?:string|undefined){
+        if( roomID != undefined ){
+            this.roomId = roomID ; 
+        }
         this.experience = new Experience() ; 
         this.scene = this.experience.scene ; 
         this.ate = false ; 
+        this.socket = this.experience.socket ; 
         this.safeTokenPostions = safePositions() ; 
         this.defaultTokenPostions = defaultPosition() ; 
     }
@@ -58,7 +71,8 @@ export default class Animate{
 
             const animate = () =>{
                 if( coords.length > 0 ){
-                    const position:stepType|undefined = coords.shift() ; 
+                    const position:stepType|undefined = coords.shift() ;
+                    emitAnimated( token ) ; 
                     if(position != undefined ){
                         gsap.to(token.position , {
                             duration : 0.5 , 
@@ -77,6 +91,11 @@ export default class Animate{
                         reject(false) ; 
                     }
                 }
+            }
+
+            const emitAnimated = (token : THREE.Mesh) =>{
+                const data:dataType = { roomID : this.roomId , name : token.name , position : token.position } ; 
+                this.socket.emit('position_update' , data );
             }
 
             const snapToHome = (token:THREE.Mesh) =>{

@@ -6,11 +6,19 @@ import IdentifyPath from "./Calculations/IdentifyPath";
 
 import Cannones from "./Cannones";
 import * as THREE from 'three';
+import * as CANNON from 'cannon-es' ; 
 import uniqid from 'uniqid' ; 
 
 import Animate from "./Calculations/Animate";
 import { defaultPosition } from "../Static";
 import { Socket } from "socket.io-client";
+
+//interfaces 
+
+interface diceData{
+    position: CANNON.Vec3 , 
+    quaternion : CANNON.Quaternion , 
+}
 
 class World {
     experience: Experience;
@@ -29,7 +37,7 @@ class World {
     room : string ; 
 
     constructor() {
-        this.multiplayer = true ; 
+        this.multiplayer = false ; 
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
@@ -73,10 +81,9 @@ class World {
         window.addEventListener('dblclick', this.engine.bind(this));
     }
 
-
     async engine() {
-        let Dicevalue:number = Number(prompt('Enter number')) ; 
-        // const Dicevalue = await this.throwDice();
+        // let Dicevalue:number = Number(prompt('Enter number')) ; 
+        const Dicevalue = await this.throwDice();
         console.log('dice : ' , Dicevalue );
 
         if (Dicevalue != 6) {
@@ -154,7 +161,10 @@ class World {
         }
 
         this.socket.on('Error' , (e)=>{
-            console.log(e);
+            alert('Error'+e) ; 
+            setTimeout(()=>{
+                location.reload() ;  
+            } , 10000 )
         })
         
     }
@@ -173,13 +183,32 @@ class World {
 
     joinRoom(){
         const roomid = prompt('Enter Room wanted to join') ; 
-
         this.socket.emit('join_room' , roomid ); 
-        this.InRoom();
+        this.socket.on('joined_room' , (roomid)=>{
+            this.room = roomid ; 
+            console.log('joined_room' , roomid ) ; 
+            this.InRoom();
+        })
     }
 
     InRoom(){
-        console.log('room mai huu')
+        this.cannon = new Cannones(this.room);
+        this.tokens = new Tokens();
+        this.animate = new Animate() ;
+        this.allTokens = this.tokens.tokens;
+        this.tokenSelect = new TokenSelect(this.allTokens);
+        this.identifyPath = new IdentifyPath();
+
+        this.userTurn = 0 ; 
+
+        this.diceMesh = this.resources.items.dice.scene;
+        this.scene.add(this.diceMesh);
+
+        window.addEventListener('dblclick', this.MultiplayerEngine.bind(this));
+    }
+
+    async MultiplayerEngine(){
+        const dicevalue = await this.throwDice() ; 
     }
 
     upadte() {

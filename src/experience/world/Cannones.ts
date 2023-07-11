@@ -2,6 +2,13 @@ import * as CANNON from 'cannon-es';
 import Experience from '../Experience';
 import CannonDebugger from 'cannon-es-debugger';
 import { EventEmitter } from 'events';
+import { Socket } from 'socket.io-client';
+
+interface diceDataType{
+    quaternion : CANNON.Quaternion , 
+    position : CANNON.Vec3 , 
+    room : string|undefined  , 
+}
 
 class Cannones extends EventEmitter {
     experience: Experience;
@@ -13,10 +20,15 @@ class Cannones extends EventEmitter {
     diceBody: CANNON.Body;
     groundBody: CANNON.Body;
     diceResult: number;
+    diceState : boolean ; 
+    counter : number ; 
+    socket : Socket ; 
+    room : string | undefined  ; 
 
 
-    constructor() {
+    constructor(room?:string|undefined) {
         super();
+        this.room = room ; 
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.camera = this.experience.camera.perspectiveCamera;
@@ -25,6 +37,10 @@ class Cannones extends EventEmitter {
         this.initWorld();
         this.initCannonDebg();
         this.createcannonBody();
+        this.socket = this.experience.socket ; 
+        this.listenToSocket() ; 
+        this.diceState = true ; 
+        this.counter = 0 ; 
     }
 
     initWorld() {
@@ -85,18 +101,26 @@ class Cannones extends EventEmitter {
                 if (isZero(euler.z)) {
                     if (isZero(euler.x)) {
                         // this.emit("DR" , 1);
+                        this.diceBody.position.set(0, 0, 0);
+                        this.diceState = true ; 
                         resolve(1);
                         return;
                     } else if (isHalfPi(euler.x)) {
                         // this.emit("DR" , 4);
+                        this.diceBody.position.set(0, 0, 0);
+                        this.diceState = true ; 
                         resolve(4);
                         return;
                     } else if (isMinusHalfPi(euler.x)) {
                         // this.emit("DR" , 3);
+                        this.diceBody.position.set(0, 0, 0);
+                        this.diceState = true ; 
                         resolve(3);
                         return;
                     } else if (isPiOrMinusPi(euler.x)) {
                         // this.emit("DR" , 6);
+                        this.diceBody.position.set(0, 0, 0);
+                        this.diceState = true ; 
                         resolve(6);
                         return;
                     } else {
@@ -105,10 +129,14 @@ class Cannones extends EventEmitter {
                     }
                 } else if (isHalfPi(euler.z)) {
                     // this.emit("DR" , 2);
+                    this.diceBody.position.set(0, 0, 0);
+                    this.diceState = true ; 
                     resolve(2);
                     return;
                 } else if (isMinusHalfPi(euler.z)) {
                     // this.emit("DR" , 5);
+                    this.diceBody.position.set(0, 0, 0);
+                    this.diceState = true ; 
                     resolve(5);
                     return;
                 } else {
@@ -129,9 +157,16 @@ class Cannones extends EventEmitter {
     }
 
     throwDice() {
+        this.diceState = false ; 
         this.diceCalc();
         this.applyRandomness();
-        this.diceBody.position.set(0, 0, 0);
+    }
+
+    listenToSocket(){
+        this.socket.on('dice_update' , (data)=>{
+            this.diceBody.position.copy(data.position) ; 
+            this.diceBody.quaternion.copy(data.quaternion) ; 
+        })
     }
 
     update() {
@@ -140,6 +175,15 @@ class Cannones extends EventEmitter {
         }
         if (this.CDebg) {
             this.CDebg.update();
+        }
+        if(!this.diceState){
+            // console.log(this.counter)
+            if( this.counter === 5 ){
+                const data:diceDataType = { room : this.room ,  position : this.diceBody.position , quaternion : this.diceBody.quaternion} ;
+                this.socket.emit('dice_data' , data ) ; 
+                this.counter = 0 ;
+            }
+            this.counter ++ ; 
         }
     }
 }
