@@ -37,7 +37,7 @@ class World {
     room : string ; 
 
     constructor() {
-        this.multiplayer = false ; 
+        this.multiplayer = true ; 
         this.experience = new Experience();
         this.scene = this.experience.scene;
         this.resources = this.experience.resources;
@@ -209,6 +209,12 @@ class World {
 
     async MultiplayerEngine(){
         const dicevalue = await this.throwDice() ; 
+        if( dicevalue != 6 ){
+            alert('all token inside have 6 to open ') ; 
+            this.userTurn +=1 ; 
+            this.userTurn %=4 ; 
+            return ;
+        }
     }
 
     upadte() {
