@@ -1,6 +1,6 @@
-# Project Name
+# DICE[3D]
 
-Brief description of what your project does.
+Classical multiplayer game ludo recreated in THREE.JS with complex mathematical calculations of XYZ euler angles , quaternions and other calculations. 
 
 ## Table of Contents
 - [Installation](#installation)
@@ -11,17 +11,21 @@ Brief description of what your project does.
 
 ## Installation
 
-Instructions on how to install and set up your project. Be sure to include any dependencies that need to be installed.
+git clone '/path'
+npm install 
+npm run dev
 
 ## Usage
 
-How to use your project, including code examples and explanations.
+1. double click on screen to rollup the dice .
+2. select the active token
+3. ready to play
 
 ### Screenshots/Illustrations
 
 Include some screenshots or illustrations showcasing your project in action.
 
-![Screenshot 1](path/to/screenshot1.png)
+![Screenshot 1](/models/TILESU.jpg)
 ![Screenshot 2](path/to/screenshot2.png)
 
 ## Features
