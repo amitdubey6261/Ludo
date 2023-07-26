@@ -23,7 +23,7 @@ npm run dev
 
 ### Screenshots/Illustrations
 
-Include some screenshots or illustrations showcasing your project in action.
+Some Prelighting and initial modelling in blender 
 
 ![Screenshot 1](public/models/LudoIllustration.png)
 ![Screenshot 2](public/models/modeeling.png)
@@ -33,11 +33,14 @@ Include some screenshots or illustrations showcasing your project in action.
 
 ## Features
 
-List the key features of your project.
+1. open token on having value 6 on dice
+2. error handling using js alerts
+3. eating other token and positioning corresponding to null
+4. Reach home and clebrate
 
 ## Contributing
 
-Explain how others can contribute to your project. Include guidelines for pull requests and code formatting.
+Others can contribute to my project just dm me and ill assign you some tasks and all and lets build it along
 
 ## License
 
@@ -47,13 +50,13 @@ Include the license under which your project is distributed.
 
 ## Author
 
-Your Name
+Amit Dubey
 
 ## Acknowledgments
 
-Mention any contributors, open-source libraries used, or any other acknowledgments.
+Amit Dubey
 
 ## Support
 
-If you need help with the project, contact email@example.com.
+If you need help with the project, contact amitdubey6261@gmail.com or dial +91 8400107332.
 
