@@ -25,8 +25,11 @@ npm run dev
 
 Include some screenshots or illustrations showcasing your project in action.
 
-![Screenshot 1](public/models/TILESU.jpg)
-![Screenshot 2](path/to/screenshot2.png)
+![Screenshot 1](public/models/LudoIllustration.png)
+![Screenshot 2](public/models/modeeling.png)
+![Screenshot 3](public/models/model.png)
+![Screenshot 4](public/models/newimg.png)
+![Screenshot 4](public/models/TILESU.jpg)
 
 ## Features
 
