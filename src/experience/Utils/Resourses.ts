@@ -1,4 +1,4 @@
-import { GLTFLoader , GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js' ; 
+import { GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js' ; 
 import { DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader.js' ; 
 import { EventEmitter } from 'events';
 import { AssetT } from './Assets';
