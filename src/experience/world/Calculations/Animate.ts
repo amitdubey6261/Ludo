@@ -11,12 +11,6 @@ interface stepType{
     z : number ; 
 }
 
-interface dataType{
-    roomID : string|undefined ; 
-    position : THREE.Vector3 ; 
-    name : string ; 
-}
-
 export default class Animate{
     experience : Experience ; 
     scene : THREE.Scene ; 
@@ -33,7 +27,6 @@ export default class Animate{
         this.experience = new Experience() ; 
         this.scene = this.experience.scene ; 
         this.ate = false ; 
-        this.socket = this.experience.socket ; 
         this.safeTokenPostions = safePositions() ; 
         this.defaultTokenPostions = defaultPosition() ; 
     }
@@ -72,7 +65,6 @@ export default class Animate{
             const animate = () =>{
                 if( coords.length > 0 ){
                     const position:stepType|undefined = coords.shift() ;
-                    emitAnimated( token ) ; 
                     if(position != undefined ){
                         gsap.to(token.position , {
                             duration : 0.5 , 
@@ -91,11 +83,6 @@ export default class Animate{
                         reject(false) ; 
                     }
                 }
-            }
-
-            const emitAnimated = (token : THREE.Mesh) =>{
-                const data:dataType = { roomID : this.roomId , name : token.name , position : token.position } ; 
-                this.socket.emit('position_update' , data );
             }
 
             const snapToHome = (token:THREE.Mesh) =>{

@@ -5,12 +5,10 @@ interface stepType{
 }
 
 import * as THREE from 'three' ; 
-import * as YUKA from 'yuka' ; 
 import Experience from '../../Experience';
 
 class IdentifyPath {
     pathArray:stepType[] ; 
-    time: YUKA.Time ;
     entityManager : YUKA.EntityManager ; 
     scene : THREE.Scene ; 
     experince : Experience ; 

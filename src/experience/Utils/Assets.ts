@@ -6,34 +6,33 @@ export interface AssetT{
 
 const AssetsArray : AssetT[] = [
     {
-        name : "kira", 
-        type : "glbmodel", 
-        path : "/models/kira.glb", 
-    }
-    ,
-    {
-        name : "michelle",  
-        type : "glbmodel",
-        path : "/models/Michelle.glb",
-
-    }
-    ,
-    {
         name : "dice" , 
         type : "glbmodel", 
         path : "/models/dice.glb" , 
     }
     ,
-    {
-        name : "board" , 
-        type : "glbmodel",
-        path : "/models/newBoard.glb" , 
-    }
-    ,
+    // {
+    //     name : "board" , 
+    //     type : "glbmodel",
+    //     path : "/models/newBoard.glb" , 
+    // }
+    // ,
     {
         name : "token",
         type : "glbmodel" ,
         path : "/models/token.glb" , 
+    }
+    ,
+    {
+        name : "DICEB",
+        type : "glbmodel" ,
+        path : "/models/LudoBoard.glb" , 
+    }
+    ,
+    {
+        name : "imgTexture",
+        type : 'texture',
+        path : "/models/TILESU.jpg"
     }
 ]
 

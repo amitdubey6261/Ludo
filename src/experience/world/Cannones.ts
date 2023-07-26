@@ -2,13 +2,6 @@ import * as CANNON from 'cannon-es';
 import Experience from '../Experience';
 import CannonDebugger from 'cannon-es-debugger';
 import { EventEmitter } from 'events';
-import { Socket } from 'socket.io-client';
-
-interface diceDataType{
-    quaternion : CANNON.Quaternion , 
-    position : CANNON.Vec3 , 
-    room : string|undefined  , 
-}
 
 class Cannones extends EventEmitter {
     experience: Experience;
@@ -22,7 +15,6 @@ class Cannones extends EventEmitter {
     diceResult: number;
     diceState : boolean ; 
     counter : number ; 
-    socket : Socket ; 
     room : string | undefined  ; 
 
 
@@ -37,8 +29,6 @@ class Cannones extends EventEmitter {
         this.initWorld();
         this.initCannonDebg();
         this.createcannonBody();
-        this.socket = this.experience.socket ; 
-        this.listenToSocket() ; 
         this.diceState = true ; 
         this.counter = 0 ; 
     }
@@ -162,28 +152,12 @@ class Cannones extends EventEmitter {
         this.applyRandomness();
     }
 
-    listenToSocket(){
-        this.socket.on('dice_update' , (data)=>{
-            this.diceBody.position.copy(data.position) ; 
-            this.diceBody.quaternion.copy(data.quaternion) ; 
-        })
-    }
-
     update() {
         if (this.world) {
             this.world.step(this.timeStep);
         }
         if (this.CDebg) {
-            this.CDebg.update();
-        }
-        if(!this.diceState){
-            // console.log(this.counter)
-            if( this.counter === 5 ){
-                const data:diceDataType = { room : this.room ,  position : this.diceBody.position , quaternion : this.diceBody.quaternion} ;
-                this.socket.emit('dice_data' , data ) ; 
-                this.counter = 0 ;
-            }
-            this.counter ++ ; 
+            // this.CDebg.update();
         }
     }
 }

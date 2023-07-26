@@ -10,8 +10,6 @@ import Controllers from './Controller';
 import World from './world/World';
 import Environment from './world/Environment';
 
-import {io , Socket } from 'socket.io-client' ; 
-
 export default class Experience{ 
     static instance: Experience; 
     canvas : HTMLCanvasElement ;
@@ -25,7 +23,6 @@ export default class Experience{
     controllers : Controllers ; 
     world : World ;
     environement : Environment ;  
-    socket : Socket ;
     
     constructor(canvas?: HTMLCanvasElement ){
         if( Experience.instance ){
@@ -54,9 +51,6 @@ export default class Experience{
             })
 
             this.resources.on('ready' , ()=>{
-                this.socket = io('http://localhost:5000') ; 
-
-                this.socket.emit('HELLO') ; 
 
                 this.world = new World() ; 
                 this.environement = new Environment() ;
